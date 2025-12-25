@@ -37,32 +37,46 @@ const Pagination = ({ totalPages, total }: PaginationProps) => {
   // Generate page numbers (with ellipsis)
   const getPageNumbers = () => {
     const pages: (number | string)[] = [];
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+    const maxPages = isMobile ? 3 : 7; // Mobile: 3 pages, Desktop: 7 pages
 
-    if (totalPages <= 7) {
+    if (totalPages <= maxPages) {
       for (let i = 1; i <= totalPages; i++) pages.push(i);
     } else {
-      if (currentPage <= 4) {
-        pages.push(1, 2, 3, 4, 5, "...", totalPages);
-      } else if (currentPage > totalPages - 4) {
-        pages.push(
-          1,
-          "...",
-          totalPages - 4,
-          totalPages - 3,
-          totalPages - 2,
-          totalPages - 1,
-          totalPages
-        );
+      if (isMobile) {
+        // Mobile logic: 1 ... X ... N
+        if (currentPage <= 2) {
+          pages.push(1, 2, 3, "...", totalPages);
+        } else if (currentPage >= totalPages - 1) {
+          pages.push(1, "...", totalPages - 2, totalPages - 1, totalPages);
+        } else {
+          pages.push(1, "...", currentPage, "...", totalPages);
+        }
       } else {
-        pages.push(
-          1,
-          "...",
-          currentPage - 1,
-          currentPage,
-          currentPage + 1,
-          "...",
-          totalPages
-        );
+        // Desktop logic (original)
+        if (currentPage <= 4) {
+          pages.push(1, 2, 3, 4, 5, "...", totalPages);
+        } else if (currentPage > totalPages - 4) {
+          pages.push(
+            1,
+            "...",
+            totalPages - 4,
+            totalPages - 3,
+            totalPages - 2,
+            totalPages - 1,
+            totalPages
+          );
+        } else {
+          pages.push(
+            1,
+            "...",
+            currentPage - 1,
+            currentPage,
+            currentPage + 1,
+            "...",
+            totalPages
+          );
+        }
       }
     }
 
@@ -72,7 +86,7 @@ const Pagination = ({ totalPages, total }: PaginationProps) => {
   const pageNumbers = getPageNumbers();
 
   return (
-    <div className="w-full flex justify-between items-center gap-6 mt-8 mb-5">
+    <div className="w-full flex flex-col md:flex-row justify-between items-center gap-4 md:gap-6 mt-8 mb-5">
       {/* Pagination buttons */}
       <div className="flex items-center gap-2">
         {/* Previous */}

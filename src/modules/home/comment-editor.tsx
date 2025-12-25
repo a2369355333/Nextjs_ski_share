@@ -51,6 +51,7 @@ const CommentEditor = ({
       setContent("");
       setImage(null);
       setImagePreview("");
+      setImageDimensions(null);
     },
   });
 
@@ -73,7 +74,7 @@ const CommentEditor = ({
         const img = new window.Image();
         img.onload = () => {
           setImageDimensions({ width: img.width, height: img.height });
-        }
+        };
         img.src = base64;
       };
       reader.readAsDataURL(file);
@@ -90,6 +91,7 @@ const CommentEditor = ({
     setContent("");
     setImage(null);
     setImagePreview("");
+    setImageDimensions(null);
   };
 
   return (
@@ -129,20 +131,22 @@ const CommentEditor = ({
         </Field>
         {/* Image Preview */}
         <div className="flex justify-center items-center">
-          <div className="w-full h-60 border-2 border-dashed border-gray-300 rounded-lg overflow-hidden bg-gray-50 flex items-center justify-center">
-            {imagePreview ? (
-              <div className="relative w-full h-full">
+          <div className="w-full max-h-[400px] border-2 border-dashed border-gray-300 rounded-lg overflow-y-auto bg-gray-50">
+            {imagePreview && imageDimensions ? (
+              <div className="w-full">
                 <Image
                   src={imagePreview}
                   alt="Preview"
-                  fill
-                  className="object-contain"
+                  width={imageDimensions.width}
+                  height={imageDimensions.height}
+                  style={{ width: '100%', height: 'auto' }}
+                  unoptimized
                 />
               </div>
             ) : (
-              <div className="text-center text-gray-400">
+              <div className="text-center text-gray-400 py-20">
                 <ImagePlus className="mx-auto h-12 w-12 text-gray-300" />
-                <p className="text-sm">No image selected</p>
+                <p className="text-sm mt-2">No image selected</p>
               </div>
             )}
           </div>

@@ -22,7 +22,7 @@ const CommentBtn = () => {
       >
         <PenLine className="w-6 h-6 group-hover:rotate-12 transition-transform duration-300" />
         <span>Share a Memorable Story</span>
-        <Sparkles className="w-5 h-5 group-hover:animate-pulse" />
+        <Sparkles className="w-5 h-5 animate-pulse group-hover:animate-spin" />
       </Button>
       <CommentEditor
         isDialogOpen={isDialogOpen}
