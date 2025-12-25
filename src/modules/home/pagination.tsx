@@ -107,7 +107,7 @@ const Pagination = ({ totalPages, total }: PaginationProps) => {
             </span>
           ) : (
             <Link
-              key={pageNum}
+              key={`page-${i}-${pageNum}`}
               href={`/?page=${pageNum}&limit=${limit}`}
               aria-current={currentPage === pageNum ? "page" : undefined}
               className={`
@@ -156,10 +156,12 @@ const Pagination = ({ totalPages, total }: PaginationProps) => {
           {({ open }) => (
             <>
               <ListboxButton
-                className="relative w-16 px-4 py-2 flex items-center justify-between rounded-full
-                cursor-pointer text-sm font-medium bg-rose-100 text-rose-700
-                hover:bg-rose-200 focus:outline-none focus:ring-2 focus:ring-rose-400
-                transition-all duration-300"
+                className={`
+                  relative w-16 px-4 py-2 flex items-center justify-between rounded-full
+                  cursor-pointer text-sm font-medium bg-rose-100 text-rose-700
+                  hover:bg-rose-200 focus:outline-none focus:ring-2 focus:ring-rose-400
+                  transition-all duration-300
+                `}
               >
                 <span>{limit}</span>
                 <ChevronDown

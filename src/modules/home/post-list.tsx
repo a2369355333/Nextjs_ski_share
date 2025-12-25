@@ -10,8 +10,6 @@ const PostList = () => {
   const { data, isLoading, error } = useQueryPostList();
   const { posts = [], totalPages, total } = data || {};
 
-  console.log(data);
-
   return (
     <div className="flex flex-col gap-2">
       <Pagination totalPages={totalPages} total={total} />
