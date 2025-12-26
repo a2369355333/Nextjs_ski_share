@@ -13,7 +13,7 @@ import { ChangeEvent, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { addPost } from "@/service/post";
-import { ImagePlus } from "lucide-react";
+import { ImagePlus, Loader2, AlertCircle } from "lucide-react";
 import Image from "next/image";
 
 interface CommentEditorProps {
@@ -29,13 +29,21 @@ const CommentEditor = ({
   const [content, setContent] = useState("");
   const [image, setImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState("");
-  const [imageDimensions, setImageDimensions] = useState<{ width: number; height: number } | null>(null);
+  const [imageDimensions, setImageDimensions] = useState<{
+    width: number;
+    height: number;
+  } | null>(null);
+  const [showValidation, setShowValidation] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
   const searchParams = useSearchParams();
   const page = searchParams.get("page") || "1";
   const limit = searchParams.get("limit") || "5";
   const queryClient = useQueryClient();
+
+  // Validation checks
+  const isTitleEmpty = showValidation && !title;
+  const isContentEmpty = showValidation && !content;
 
   const { mutate: addPostMutate, isPending } = useMutation({
     mutationFn: addPost,
@@ -52,11 +60,26 @@ const CommentEditor = ({
       setImage(null);
       setImagePreview("");
       setImageDimensions(null);
+      setShowValidation(false);
     },
   });
 
   const onPost = () => {
+    if (!title || !content) {
+      setShowValidation(true);
+      return;
+    }
     addPostMutate({ title, content, image, imageDimensions });
+  };
+
+  const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setTitle(e.target.value);
+    if (showValidation && e.target.value) setShowValidation(false);
+  };
+
+  const handleContentChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    setContent(e.target.value);
+    if (showValidation && e.target.value) setShowValidation(false);
   };
 
   const onFileChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -92,6 +115,7 @@ const CommentEditor = ({
     setImage(null);
     setImagePreview("");
     setImageDimensions(null);
+    setShowValidation(false);
   };
 
   return (
@@ -104,34 +128,58 @@ const CommentEditor = ({
       <DialogBackdrop className="fixed inset-0 bg-black/70" />
       <DialogPanel className="w-full max-w-xl z-50 rounded-lg bg-white p-6 shadow-lg flex flex-col gap-3">
         <DialogTitle className="flex justify-center font-bold text-xl sm:text-2xl">
-          What's your favorate memory?
+          What's your favorite memory?
         </DialogTitle>
         {/* Title */}
         <Field>
-          <Label className="text-sm text-gray-600">Title</Label>
+          <Label className="text-sm text-gray-600 flex items-center gap-1">
+            Title <span className="text-red-500">*</span>
+          </Label>
           <Input
-            className="w-full p-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded"
+            className={`w-full p-2 border rounded transition-colors
+              ${
+                isTitleEmpty
+                  ? "border-red-500 focus:ring-red-500"
+                  : "border-gray-300 focus:ring-blue-500"
+              }
+              focus:outline-none focus:ring-2`}
             type="text"
             value={title}
-            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              setTitle(e.target.value)
-            }
+            onChange={handleTitleChange}
           />
+          {isTitleEmpty && (
+            <div className="flex items-center gap-1 mt-1 text-red-500 text-sm">
+              <AlertCircle className="w-4 h-4" />
+              <span>Title is required</span>
+            </div>
+          )}
         </Field>
         {/* Content */}
         <Field>
-          <Label className="text-sm text-gray-600">Content</Label>
+          <Label className="text-sm text-gray-600 flex items-center gap-1">
+            Content <span className="text-red-500">*</span>
+          </Label>
           <Textarea
-            className="w-full min-h-[100px] p-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded"
+            className={`w-full min-h-25 p-2 border rounded transition-colors
+              ${
+                isContentEmpty
+                  ? "border-red-500 focus:ring-red-500"
+                  : "border-gray-300 focus:ring-blue-500"
+              }
+              focus:outline-none focus:ring-2`}
             value={content}
-            onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
-              setContent(e.target.value)
-            }
+            onChange={handleContentChange}
           />
+          {isContentEmpty && (
+            <div className="flex items-center gap-1 mt-1 text-red-500 text-sm">
+              <AlertCircle className="w-4 h-4" />
+              <span>Content is required</span>
+            </div>
+          )}
         </Field>
         {/* Image Preview */}
         <div className="flex justify-center items-center">
-          <div className="w-full max-h-80 sm:max-h-100 border-2 border-dashed border-gray-300 rounded-lg overflow-y-auto bg-gray-50">
+          <div className="w-full max-h-65 sm:max-h-100 border-2 border-dashed border-gray-300 rounded-lg overflow-y-auto bg-gray-50">
             {imagePreview && imageDimensions ? (
               <div className="w-full">
                 <Image
@@ -139,13 +187,14 @@ const CommentEditor = ({
                   alt="Preview"
                   width={imageDimensions.width}
                   height={imageDimensions.height}
-                  style={{ width: '100%', height: 'auto' }}
+                  style={{ width: "100%", height: "auto" }}
                 />
               </div>
             ) : (
               <div className="text-center text-gray-400 py-20">
                 <ImagePlus className="mx-auto h-12 w-12 text-gray-300" />
                 <p className="text-sm mt-2">No image selected</p>
+                <p className="text-xs mt-1 text-gray-400">(Optional)</p>
               </div>
             )}
           </div>
@@ -168,19 +217,20 @@ const CommentEditor = ({
           </Button>
           <div className="flex items-center gap-2">
             <Button
-              className={`px-4 py-2 text-white rounded-lg cursor-pointer
+              className={`px-4 py-2 text-white rounded-lg cursor-pointer flex items-center gap-2 transition-colors
                 ${
-                  isPending || !title || !content
+                  isPending
                     ? "bg-blue-300 cursor-not-allowed"
-                    : "bg-blue-500 hover:bg-blue-600"
+                    : "bg-blue-500 hover:bg-blue-600 active:bg-blue-700"
                 }`}
               onClick={onPost}
-              disabled={isPending || !title || !content}
+              disabled={isPending}
             >
-              Submit
+              {isPending && <Loader2 className="w-4 h-4 animate-spin" />}
+              <span>Submit</span>
             </Button>
             <Button
-              className="px-4 py-2 text-white bg-gray-500 hover:bg-gray-600 rounded-lg cursor-pointer"
+              className="px-4 py-2 text-white bg-gray-500 hover:bg-gray-600 active:bg-gray-700 rounded-lg cursor-pointer transition-colors"
               onClick={handleDialogClose}
             >
               Cancel

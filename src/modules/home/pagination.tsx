@@ -180,7 +180,7 @@ const Pagination = ({ totalPages, total }: PaginationProps) => {
         </Button>
       </div>
       {/* Page size + range */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-3">
         <label className="text-sm text-rose-600 font-medium">Page Size:</label>
         <Listbox value={limit} onChange={handleLimitChange}>
           {({ open }) => (
