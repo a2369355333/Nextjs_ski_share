@@ -5,24 +5,10 @@ import useQueryPostList from "@/hooks/use-query-post-list";
 import Link from "next/link";
 import Pagination from "./pagination";
 import { Loader2 } from "lucide-react";
-import { useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
 
 const PostList = () => {
-  const router = useRouter();
-  const searchParams = useSearchParams();
   const { data, isLoading, error } = useQueryPostList();
   const { posts = [], totalPages, total } = data || {};
-
-  // Ensure URL has page and limit parameters on initial load
-  useEffect(() => {
-    const page = searchParams.get("page");
-    const limit = searchParams.get("limit");
-    
-    if (!page || !limit) {
-      router.replace("/?page=1&limit=5", { scroll: false });
-    }
-  }, [searchParams, router]);
 
   return (
     <div className="flex flex-col gap-2">
@@ -43,16 +29,16 @@ const PostList = () => {
         </div>
       )}
       
-      {!isLoading && !error && data && posts.length === 0 && (
+      {!isLoading && posts.length === 0 && (
         <div className="flex items-center justify-center py-20">
           <div className="text-center">
             <p className="text-rose-400 text-lg font-medium">No posts yet</p>
-            <p className="text-rose-400 text-sm mt-2">Be the first to share your story!</p>
+            <p className="text-rose-400 text-sm mt-2">Be the first to share your story !</p>
           </div>
         </div>
       )}
       
-      {!isLoading && posts.length > 0 &&
+      {!isLoading &&
         posts.map((post: Post) => (
           <Link key={post.id} href={`/post/${post.id}`}>
             <Post post={post} />

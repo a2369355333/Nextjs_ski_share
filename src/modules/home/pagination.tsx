@@ -23,6 +23,10 @@ const Pagination = ({ totalPages, total }: PaginationProps) => {
   const currentPage = parseInt(page, 10);
   const limitNum = parseInt(limit, 10);
 
+  const isFirstPage = currentPage === 1;
+  const isLastPage = currentPage === totalPages;
+  const isOnlyOnePage = totalPages === 1;
+
   // Add validation to ensure values are valid
   const startItem = (currentPage - 1) * limitNum + 1;
   const endItem = Math.min(currentPage * limitNum, total);
@@ -34,10 +38,6 @@ const Pagination = ({ totalPages, total }: PaginationProps) => {
   if (!isValidData) {
     return null;
   }
-
-  const isFirstPage = currentPage === 1;
-  const isLastPage = currentPage === totalPages;
-  const isOnlyOnePage = totalPages === 1;
 
   const handleLimitChange = (newLimit: string) => {
     router.push(`/?page=1&limit=${newLimit}`, { scroll: false });
