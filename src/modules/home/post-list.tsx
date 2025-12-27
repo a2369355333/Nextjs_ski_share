@@ -33,7 +33,7 @@ const PostList = () => {
         <div className="flex items-center justify-center py-20">
           <div className="text-center">
             <p className="text-rose-400 text-lg font-medium">No posts yet</p>
-            <p className="text-gray-500 text-sm mt-2">Be the first to share your story!</p>
+            <p className="text-rose-400 text-sm mt-2">Be the first to share your story !</p>
           </div>
         </div>
       )}

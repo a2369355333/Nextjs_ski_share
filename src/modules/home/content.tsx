@@ -30,7 +30,7 @@
           <div className="flex items-center gap-3">
             <Snowflake className="w-8 h-8 text-rose-400 animate-spin-slow" />
             <h1 className="text-2xl md:text-4xl font-bold bg-linear-to-r from-rose-500 to-pink-500 bg-clip-text text-transparent">
-              Skating Trip Share
+              Ski Trip Share
             </h1>
             <Snowflake className="w-8 h-8 text-rose-400 animate-spin-slow" />
           </div>

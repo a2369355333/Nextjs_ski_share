@@ -30,6 +30,11 @@ const Pagination = ({ totalPages, total }: PaginationProps) => {
   // Check if values are valid
   const isValidData = !isNaN(startItem) && !isNaN(endItem) && total > 0;
 
+  // Don't render pagination if there's no data
+  if (!isValidData) {
+    return null;
+  }
+
   const isFirstPage = currentPage === 1;
   const isLastPage = currentPage === totalPages;
   const isOnlyOnePage = totalPages === 1;
@@ -222,26 +227,9 @@ const Pagination = ({ totalPages, total }: PaginationProps) => {
             </>
           )}
         </Listbox>
-        {/* Range display with fixed width to prevent layout shift */}
+        {/* Range display */}
         <div className="text-sm text-rose-600 font-medium text-right">
-          {isValidData ? (
-            `${startItem}-${endItem} of ${total}`
-          ) : (
-            <div className="flex items-center justify-end gap-1">
-              <div
-                className="w-2 h-2 bg-rose-300 rounded-full animate-pulse"
-                style={{ animationDelay: "0ms", animationDuration: "1000ms" }}
-              ></div>
-              <div
-                className="w-2 h-2 bg-rose-400 rounded-full animate-pulse"
-                style={{ animationDelay: "150ms", animationDuration: "1000ms" }}
-              ></div>
-              <div
-                className="w-2 h-2 bg-rose-500 rounded-full animate-pulse"
-                style={{ animationDelay: "300ms", animationDuration: "1000ms" }}
-              ></div>
-            </div>
-          )}
+          {`${startItem}-${endItem} of ${total}`}
         </div>
       </div>
     </div>
