@@ -31,5 +31,5 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 
 ## Deploy on Vercel
 
-Project URL: [https://nextjs-skating-share.vercel.app/](https://nextjs-skating-share.vercel.app/)
+Project URL: [https://nextjs-ski-share.vercel.app/](https://nextjs-ski-share.vercel.app/)
 
