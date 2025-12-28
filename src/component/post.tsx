@@ -15,18 +15,13 @@ const Post = ({ post }: PostProps) => {
       <h1 className="text-xl font-bold">{title}</h1>
       <div className="text-lg whitespace-pre-wrap">{content}</div>
       {image && (
-        <div
-          className="relative w-full my-3 bg-gray-100"
-          style={{
-            aspectRatio: `${image.width} / ${image.height}`,
-            maxHeight: "600px",
-          }}
-        >
+        <div className="relative w-full my-3 overflow-hidden rounded-lg bg-gray-100">
           <Image
             src={`data:${image.mimeType};base64,${image.buffer}`}
             alt={title}
-            fill
-            className="object-contain"
+            width={image.width}
+            height={image.height}
+            className="w-full h-auto"
           />
         </div>
       )}
